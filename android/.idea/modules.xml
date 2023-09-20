@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/sky.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/sky.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-2056434008/sky.react-native-gesture-handler.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-2056434008/sky.react-native-gesture-handler.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1451219415/sky.react-native-mmkv.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-1451219415/sky.react-native-mmkv.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-103102860/sky.react-native-reanimated.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-103102860/sky.react-native-reanimated.main.iml" />
+    </modules>
+  </component>
+</project>
