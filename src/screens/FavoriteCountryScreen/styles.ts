@@ -22,7 +22,15 @@ const styles = StyleSheet.create({
     noDataFound: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        color: '#6e6178',
+    },
+    noDataFoundTextStyle: {
+        paddingTop: 8,
+        paddingBottom: 8,
+        fontSize: 16,
+        fontWeight: '400',
+        color: '#6e6178',
     },
     headingStyle: {
         paddingTop: 8,

@@ -1,67 +1,24 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 import React, { useContext, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
   Image,
   SafeAreaView,
-  StatusBar,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { SvgUri } from "react-native-svg";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import styles from './styles'
+
 import { fetchCountryData } from '../../services/CountryService'
-import CountryDetails from '@/components/CountryDetails/CountryDetails';
 import { useTheme } from "../../hooks";
 import ThemeContext from "../../services/ThemeContext";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import CountryDataView from '@/components/CountryDetails/CountryDetails';
 import { ApplicationScreenProps } from 'types/navigation';
-
-interface FlagData {
-  png: string;
-  svg: string;
-  alt: string;
-}
-
-interface NameData {
-  common: string;
-  official: string;
-  nativeName: {
-    [key: string]: {
-      official: string;
-      common: string;
-    };
-  };
-}
-
-interface CurrencyData {
-  name: string;
-  symbol: string;
-}
-
-interface LanguageData {
-  [key: string]: string;
-}
-
-interface CountryData {
-  flags: FlagData;
-  name: NameData;
-  currencies: {
-    [key: string]: CurrencyData;
-  };
-  capital: string[];
-  languages: LanguageData;
-  area: number;
-  population: number;
-  timezones: string[];
-}
 
 const CountrySearchScreen = ({ navigation }: ApplicationScreenProps) => {
   const [countryName, setCountryName] = useState("");
@@ -96,13 +53,13 @@ const CountrySearchScreen = ({ navigation }: ApplicationScreenProps) => {
     }
   };
 
-
+  // To Fav & unFav countries
   const handleAddToFavorite = async () => {
     try {
       if (!countryData) {
         return;
       }
-      const countryName = countryData[0].name.common;
+      const countryName = countryData[0].name.common.toLowerCase();
       const isCountryFavorite = favoriteCountries.includes(countryName);
       let updatedFavoriteCountries = [...favoriteCountries];
       if (isCountryFavorite) {
@@ -112,7 +69,7 @@ const CountrySearchScreen = ({ navigation }: ApplicationScreenProps) => {
         );
       } else {
         // Add the country to the favorite list
-        updatedFavoriteCountries.push(countryName);
+        updatedFavoriteCountries.push(countryName.toLowerCase());
       }
       setFavoriteCountries(updatedFavoriteCountries);
 
@@ -126,6 +83,7 @@ const CountrySearchScreen = ({ navigation }: ApplicationScreenProps) => {
     }
   };
 
+  //To Retrive data from the async storage
   const retrieveData = async (key: string) => {
     try {
       const data = await AsyncStorage.getItem(key);
@@ -136,19 +94,21 @@ const CountrySearchScreen = ({ navigation }: ApplicationScreenProps) => {
     }
   };
 
+   //To Store data to the async storage
   const storeData = async (key: string, data: any) => {
     try {
-      await AsyncStorage.setItem(key, JSON.stringify(data));
+      await AsyncStorage.setItem(key.toLowerCase(), JSON.stringify(data));
     } catch (error) {
       // Handle error
     }
   };
 
+  //API call to search based on country name
   const handleSearch = async () => {
     setCountryData(null);
     if (countryName !== "") {
       try {
-        const cachedData = await retrieveData(countryName);
+        const cachedData = await retrieveData(countryName.toLocaleLowerCase());
         if (cachedData) {
           setCountryData(cachedData);
         } else {
@@ -168,7 +128,7 @@ const CountrySearchScreen = ({ navigation }: ApplicationScreenProps) => {
   }
 
   return (
-    <View style={styles.containerStyle}>
+    <SafeAreaView style={styles.containerStyle}>
       <View style={styles.headerView}>
         <View
           style={[
@@ -221,29 +181,21 @@ const CountrySearchScreen = ({ navigation }: ApplicationScreenProps) => {
             </View>
             <TouchableOpacity onPress={handleAddToFavorite}>
               <Image
-                source={favoriteCountries.includes(countryData[0]?.name.common ?? "") ? Images.icons.fav : Images.icons.unFav}
+                source={favoriteCountries.includes(countryData[0]?.name.common.toLowerCase() ?? "") ? Images.icons.fav : Images.icons.unFav}
                 style={styles.favIcon}
               />
             </TouchableOpacity>
           </View>
-          <CountryDetails leftKey="Country" value={countryData[0]?.name.common ?? ""}></CountryDetails>
-          <CountryDetails leftKey="Capital" value={countryData[0]?.capital.map(item => item).join(', ') ?? ""}></CountryDetails>
-          <CountryDetails leftKey="Population" value={countryData[0].population.toString()}></CountryDetails>
-          <CountryDetails leftKey="Currency" value={countryData[0].currencies[Object.keys(countryData[0].currencies)[0]].name + " (" + countryData[0].currencies[Object.keys(countryData[0].currencies)[0]].symbol + ")"} ></CountryDetails>
-          <CountryDetails leftKey="TimeZone" value={countryData[0].timezones.map(item => item).join(', ') ?? ""}></CountryDetails>
-          <CountryDetails leftKey="Area" value={countryData[0].area.toString()}></CountryDetails>
-          <CountryDetails leftKey="Languages Spoken" value={Object.values(countryData[0].languages).join(", ")}></CountryDetails>
+          <CountryDataView countryData = {countryData[0]} />
         </View>) : (
-          <View>
-            {isLoading && (
-              <View style={styles.loading}>
-                <ActivityIndicator size="large" color="green" />
-              </View>
-            )}
-          </View>
+          isLoading && (
+            <View style={styles.loading}>
+              <ActivityIndicator size="large" color={isDark ? "white" : 'black'} />
+            </View>
+          )
         )
       }
-    </View>
+    </SafeAreaView>
   );
 }
 export default CountrySearchScreen;

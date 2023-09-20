@@ -59,7 +59,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loading: {
-    paddingTop: 50
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   cardStyle: {
     flexDirection: 'column',
